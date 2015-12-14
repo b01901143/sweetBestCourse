@@ -4,18 +4,45 @@ import Course
 import State
 from util import *
 
+credit_limit = 25
+
 #======== Preparing and parsing data =======
 class_stars,teacher_stars = readStars()
 courses = readSweetList(class_stars,teacher_stars)
 
 #======== State Algorithm ======
 EmptyState = State.State()
-print EmptyState.free
 
-print max([(course.getAverageSweet(),course.name) for course in courses],key=itemgetter(0))[1]
-print max([(course.getAverageSweet(),course.teacher) for course in courses],key=itemgetter(0))[1]
+#======== +bi show Initial State ======
+InitialState = EmptyState
+
+#Greedy Algorithm
+(nextState,score,class_stars,GPA) = max([(InitialState.generateSuccessor(course,credit_limit),\
+				(course.class_stars/5.0*3.66)+course.GPA,course.class_stars,course.GPA)\
+				for course in courses if InitialState.generateSuccessor(course,credit_limit) != None],key=itemgetter(1))
+print nextState
+print score
+print class_stars
+print GPA
+
+while True:
+	(nextState,score,class_stars,GPA) = max([(nextState.generateSuccessor(course,credit_limit),\
+				(course.class_stars/5.0*3.66)+course.GPA,course.class_stars,course.GPA)\
+				for course in courses if nextState.generateSuccessor(course,credit_limit) != None],key=itemgetter(1))
+	if not (nextState,score,class_stars,GPA):
+		break
+	print nextState
+	print score
+	print class_stars
+	print GPA
+
+
+
 
 '''
-nextState = EmptyState.generateSuccessor(courses[0])
-print nextState.canTake(courses[0])
+nextState = max([EmptyState.generateSuccessor(courses[0]),course.])
+if nextState:
+	print nextState.free, nextState.credit
+else:
+	print nextState
 '''
