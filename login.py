@@ -73,6 +73,6 @@ takenCourses =[]
 for a in font:
     b = a.findAll("td")
     if len(b) == 9:
-        takenCourses.append(b[2].text)
+        takenCourses.append((b[2].text,b[3].text))
 for course in takenCourses:
-    print course
+    print course[0],course[1]
