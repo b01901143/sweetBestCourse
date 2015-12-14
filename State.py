@@ -59,6 +59,8 @@ class State:
     return True
 
   def generateSuccessor( self , course ,credit_limit):
+    if course.credit == 0:
+      return None
     if not self.canTake(course) or self.credit+course.credit>credit_limit:
       #raise Exception("Cannot take course "+str(course))
       return None

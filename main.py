@@ -26,15 +26,17 @@ print class_stars
 print GPA
 
 while True:
-	(nextState,score,class_stars,GPA) = max([(nextState.generateSuccessor(course,credit_limit),\
+	try:
+		(nextState,score,class_stars,GPA) = max([(nextState.generateSuccessor(course,credit_limit),\
 				(course.class_stars/5.0*3.66)+course.GPA,course.class_stars,course.GPA)\
 				for course in courses if nextState.generateSuccessor(course,credit_limit) != None],key=itemgetter(1))
-	if not (nextState,score,class_stars,GPA):
+		print nextState
+		print score
+		print class_stars
+		print GPA
+	except:
+		print "Greedy finished!!!"
 		break
-	print nextState
-	print score
-	print class_stars
-	print GPA
 
 
 
