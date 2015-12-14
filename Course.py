@@ -6,13 +6,13 @@ class Course:
     self.name = name
     self.teacher = teacher
     self.credit = credit
-    self.sweet = sweet
-    self.time = set()
+    self.sweet = sweet # FuShwenBiShow * (high num)
+    self.time = set() # given a NULL time to indicate rule-out
     for item in time:
       self.time.add(item)
     self.class_stars = None
     self.teacher_stars = None
-    
+
   def __eq__( self , other ):
   	return self.name == other.name and self.teacher == other.teacher and self.time == other.time 
 
@@ -51,4 +51,3 @@ class Course:
 
   def setTeacherStars( self, stars ):
     self.teacher_stars = stars
-

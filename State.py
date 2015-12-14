@@ -59,7 +59,10 @@ class State:
     return True
 
   def generateSuccessor( self , course ):
-    if not self.canTake(course): raise Exception("Cannot take course "+str(course)) 
+    if not self.canTake(course):
+      #raise Exception("Cannot take course "+str(course))
+      print  "Cannot take course ",course
+      return False
     state = State(self)
     for time in course.getTime():
       state.free.remove(time)
