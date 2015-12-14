@@ -5,13 +5,19 @@ class Course:
   def __init__( self, name , teacher , time , credit, sweet):
     self.name = name
     self.teacher = teacher
-    self.credit = credit
+    self.credit = int(credit) if credit!='' else 0
     self.sweet = sweet # FuShwenBiShow * (high num)
     self.time = set() # given a NULL time to indicate rule-out
     for item in time:
       self.time.add(item)
     self.class_stars = None
     self.teacher_stars = None
+    if sum(self.sweet)==0:
+      self.GPA = 0
+    else:
+      aver_sweet = 4.3*self.sweet[9] +4.0*self.sweet[8] +3.7*self.sweet[7] +3.3*self.sweet[6] \
+                +3.0*self.sweet[5] +2.7*self.sweet[4] +2.3*self.sweet[3] +2.0*self.sweet[2] +1.7*self.sweet[1]
+      self.GPA = aver_sweet/float(sum(self.sweet))
 
   def __eq__( self , other ):
   	return self.name == other.name and self.teacher == other.teacher and self.time == other.time 
@@ -31,13 +37,6 @@ class Course:
 
   def getSweetlist( self ):
     return self.sweet
-
-  def getAverageSweet( self ):
-    if sum(self.sweet)==0:
-      return 0
-    aver_sweet = 4.3*self.sweet[9] +4.0*self.sweet[8] +3.7*self.sweet[7] +3.3*self.sweet[6] \
-                +3.0*self.sweet[5] +2.7*self.sweet[4] +2.3*self.sweet[3] +2.0*self.sweet[2] +1.7*self.sweet[1]
-    return aver_sweet/float(sum(self.sweet))
 
   def getFailratio( self ):
     if sum(self.sweet)==0:
