@@ -3,6 +3,16 @@
 
 import requests
 from bs4 import BeautifulSoup as bs
+from requests.adapters import HTTPAdapter
+import ssl
+from urllib3.poolmanager import PoolManager
+class MyAdapter(HTTPAdapter):
+     def init_poolmanager(self, connections, maxsize, block=False):
+         self.poolmanager = PoolManager(num_pools=connections,
+                                        maxsize=maxsize,
+                                        block=block,
+                                        ssl_version=ssl.PROTOCOL_TLSv1)
+
 
 ################################type here################################
 user = raw_input('student id:')
@@ -12,7 +22,7 @@ password = raw_input('password:')
 
 
 session1 = requests.session()
-
+session1.mount('https://', MyAdapter())
 
 pre = session1.get("https://if163.aca.ntu.edu.tw/eportfolio/login.asp")
 
@@ -43,7 +53,7 @@ login = {
 login['user'] = user
 login['pass'] = password
 
-res = session1.post("https://web2.cc.ntu.edu.tw/p/s/login2/p1.php",headers=header,data=login,cookies=cookie)
+res = session1.post("https://web2.cc.ntu.edu.tw/p/s/login2/p1.php",data=login,cookies=cookie,headers=header)
 res.encoding = 'big5'
 
 reg = session1.get("https://if163.aca.ntu.edu.tw/eportfolio/student/GRC.asp",cookies = requests.utils.dict_from_cookiejar(res.cookies))
