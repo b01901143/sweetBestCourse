@@ -39,3 +39,4 @@ for item in bi_show:
 print "\nfu shwen bi show:"
 for item in fu_shwen_bi_show:
 	print item
+return bi_show
