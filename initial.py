@@ -10,34 +10,37 @@ def Initial(user, grade):
     department = user[3:6]
     
     session1 = requests.session()
-    
-    url = "http://140.112.161.31/NTUVoxCourse/index.php/uquery/cou?DPRNDPT="
-    url += department + "0%20&QPYEAR=100&MSLGRD=" + grade
-    
-    res = session1.get(url)
-    soup = bs(res.text, "html.parser")
-    table = soup.select("tr")
-    i=0 
+    grade_int = int(grade)
     bi_show = []
     fu_shuan_bi_show = []
-    for row in table:
-        i+=1
-        if i<4:
-            continue
-        items = row.findAll("td")
-        if not len(items) == 7:
-            continue
-        if items[4].text=='': 
-            bi_show.append(items[1].text)
-        else:
-        	fu_shuan_bi_show.append(items[1].text)
+    while grade_int > 0:
     
+        url = "http://140.112.161.31/NTUVoxCourse/index.php/uquery/cou?DPRNDPT="
+        url += department + "0%20&QPYEAR=100&MSLGRD=" + str(grade_int)
+        
+        res = session1.get(url)
+        soup = bs(res.text, "html.parser")
+        table = soup.select("tr")
+        i=0 
+        for row in table:
+            i+=1
+            if i<4:
+                continue
+            items = row.findAll("td")
+            if not len(items) == 7:
+                continue
+            if items[4].text=='': 
+                bi_show.append(items[1].text)
+            else:
+            	fu_shuan_bi_show.append(items[1].text)
+        grade_int -= 1
     #print "\nbi show:"
     #for item in bi_show:
-    #	print item
-    
-    
+    #    print item
+        
+        
     #print "\nfu shuan bi show:"
     #for item in fu_shuan_bi_show:
-    #	print item
+    #    print item
     return bi_show, fu_shuan_bi_show  
+#Initial("b01901143","3")
