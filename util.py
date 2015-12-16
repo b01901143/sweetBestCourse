@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf8 -*-
+
 import csv
 import cPickle
 
@@ -17,6 +20,7 @@ def readSweetList(class_stars, teacher_stars):
 		courses = []
 		data = csv.reader(fh, delimiter=',')
 		for line in data:
+			#classification = classify(line[0])
 			newC = Course.Course(line[0],line[1],[l for l in line[5].split(' ') if l != '']\
 								,line[2],[int(s) for s in line[8:]]) 
 			courses.append(newC)
@@ -44,8 +48,10 @@ def readStars():
 	fh.close()
 	return class_stars,teacher_stars
 
-sweety_dict = dict()
+#def classify(name):
+
 def readSweetyCsv():
+	sweety_dict = dict()
 	with open ("Data/sweety_list.csv", 'r') as f :
 		for line in f :
 			info = line.split(',')
@@ -72,5 +78,4 @@ def readSweetyCsv():
 				sweety_dict[course_name] = [info[1:]]
 			else:
 				sweety_dict[course_name].append(info[1:])
-
-readSweetyCsv()
+	return sweety_dict

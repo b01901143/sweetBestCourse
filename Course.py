@@ -10,6 +10,7 @@ class Course:
     self.time = set() # given a NULL time to indicate rule-out
     for item in time:
       self.time.add(item)
+    # general, PE, BiShow, department selective, general selective
     self.class_stars = None
     self.teacher_stars = None
     if sum(self.sweet)==0:
