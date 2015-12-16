@@ -6,7 +6,7 @@ import Tkinter as tkinter
 from tktable import *
 from initial import *
 from login import *
-from readSweety import *
+from util import *
 
 class GUI:
     def __init__(self):

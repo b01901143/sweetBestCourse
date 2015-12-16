@@ -1,7 +1,7 @@
 from operator import itemgetter
 import Course
 import State
-from gui_main import *
+#from gui_main import *
 from util import *
 from initial import *
 from login import *
@@ -13,10 +13,11 @@ class_stars,teacher_stars = readStars()
 courses = readSweetList(class_stars,teacher_stars)
 
 #======== Login, init states ========
+'''
 gui = GUI()
 gui.initVar()
 gui.createTable()
-
+'''
 #bi_show, fu_shuan_bi_show = gui.bi_show, gui.fu_shuan_bi_show
 #takenCourses = Login(user, password)
 
@@ -47,6 +48,9 @@ while True:
 	except:
 		print "Greedy finished!!!"
 		break
+
+for c in  nextState.taken:
+	print c
 
 
 
