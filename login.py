@@ -68,16 +68,39 @@ def Login(user, password):
     
     soup = bs(des.text, "html.parser")
     font = soup.select("tr")
-    
+
     takenCourses =[]
+    neccessaries = dict()
     
     for a in font:
         b = a.findAll("td")
+        if len(b) == 1:
+            if b[0].text[4:10] == '      ' and not b[0].text[10] == ' ': #text[4~9]
+                neccessaries['指定選修'] = int(b[0].text[37:39])
+                neccessaries['一般選修'] = int(b[0].text[48:50])
+                neccessaries['通識'] = int(b[0].text[56:58])
+
         if len(b) == 9:
+            if b[7].text == u' 未到 ' or b[7].text ==' F ' or  b[7].text == u' 停修 ':
+                continue
+            update(neccessaries,b)
             c = b[2].text
             c = c.split(" ")[0]
             takenCourses.append(c)
 
+    for name in neccessaries:
+        print name , neccessaries[name]
+    
     return takenCourses
-
+def update(nes , b):
+    if b[0].text[1:3] == u'通識':
+        nes['通識'] -= int(b[6].text)
+    elif b[0].text[1:3] == u'選修' and b[8].text == u' 可當指定選修 ' and nes['指定選修']>0:
+        nes['指定選修'] -= int(b[6].text)
+    elif b[0].text[1:3] == u'選修':
+        nes['一般選修'] -= int(b[6].text)
+    for name in nes:
+        if nes[name]<0:
+            nes[name]=0
+p = Login("b01901143","s2264")
     
