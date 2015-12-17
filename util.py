@@ -22,7 +22,8 @@ def readSweetList(class_stars, teacher_stars):
 		for line in data:
 			#classification = classify(line[0])
 			newC = Course.Course(line[0],line[1],[l for l in line[5].split(' ') if l != '']\
-								,line[2],[int(s) for s in line[8:]]) 
+								,line[2],[int(s) for s in line[8:]],line[4]) 
+			print line[4]
 			courses.append(newC)
 			if line[0] in class_stars:
 				newC.setClassStars( class_stars[line[0]] )

@@ -2,7 +2,7 @@
 # -*- coding: utf8 -*-
 
 class Course:
-  def __init__( self, name , teacher , time , credit, sweet):
+  def __init__( self, name , teacher , time , credit, sweet, ID):
     self.name = name
     self.teacher = teacher
     self.credit = int(credit) if credit!='' else 0
@@ -11,6 +11,7 @@ class Course:
     for item in time:
       self.time.add(item)
     # general, PE, BiShow, department selective, general selective
+    self.ID = ID
     self.class_stars = None
     self.teacher_stars = None
     if sum(self.sweet)==0:
