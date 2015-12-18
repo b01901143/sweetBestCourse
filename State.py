@@ -3,7 +3,6 @@
 
 import Course
 
-
 class State:
   def __init__( self, prevState = None ):
     if prevState != None :
