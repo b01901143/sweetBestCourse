@@ -10,7 +10,7 @@ from util import *
 import State
 import Course
 from operator import itemgetter
-import pdb
+#import pdb
 
 class GUI:
     def __init__(self):
@@ -23,7 +23,8 @@ class GUI:
         self.EmptyState = State.State()
         self.InitialState = State.State()
         self.credit_limit = 25
-
+        self.total_score = 1
+        
     def test_cmd(self, event):
         if event.i == 0:
             return '%i, %i' % (event.r, event.c)
@@ -83,6 +84,7 @@ class GUI:
         self.updateBishow2Table(self.to_show)
         
     def updateBishow2Table(self, bi_show):
+        sweety_dict = readSweetyCsv()
         for item in bi_show:
             for time in sweety_dict[item][0][4].split(" ")[ :-1]:
                 self.current_state.append(sweety_dict[item])
@@ -115,39 +117,86 @@ class GUI:
                 print "Greedy finished!!!"
                 break
 
+    def updateScore(self):
+        self.total_score = int(self.shibi_spin.get()) + int(self.shish_spin.get()) + \
+                           int(self.shush_spin.get()) + int(self.tonsh_spin.get()) + int(self.sport_spin.get())
+        self.shibi_spin.config(to=(40-self.total_score))
+        self.shish_spin.config(to=(40-self.total_score))
+        self.shush_spin.config(to=(40-self.total_score))
+        self.tonsh_spin.config(to=(40-self.total_score))
+        self.sport_spin.config(to=(40-self.total_score))
+        if self.total_score >= 20:
+            self.shibi_spin.config(to=self.shibi_spin.get())
+            self.shish_spin.config(to=self.shish_spin.get())
+            self.shush_spin.config(to=self.shush_spin.get())
+            self.tonsh_spin.config(to=self.tonsh_spin.get())
+            self.sport_spin.config(to=self.sport_spin.get())
+        self.score_label.config(text="能力點數：%i" % (20-self.total_score))
+        print self.total_score
+
+
     def createTable(self):
         self.user_label = tkinter.Label(self.root, text="帳號：")
         self.user_label.grid(row=0, column=0)
-        self.user_field = tkinter.Entry(self.root, width=10)
-        self.user_field.grid(row=0, column=1)
+        self.user_field = tkinter.Entry(self.root, width=15)
+        self.user_field.grid(row=0, column=1, columnspan=3)
     
         self.pswd_label = tkinter.Label(self.root, text="密碼：")
         self.pswd_label.grid(row=1, column=0)
-        self.pswd_field = tkinter.Entry(self.root, width=10, show="*")
-        self.pswd_field.grid(row=1, column=1)
+        self.pswd_field = tkinter.Entry(self.root, width=15, show="*")
+        self.pswd_field.grid(row=1, column=1, columnspan=3)
 
         self.grade_label = tkinter.Label(self.root, text="年級：")
         self.grade_label.grid(row=2, column=0)
-        self.grade_field = tkinter.Entry(self.root, width=10)
-        self.grade_field.grid(row=2, column=1)
-        
-        self.login_button = tkinter.Button(self.root, text="登入", command=self.loginMethod)
-        self.login_button.grid(row=5, column=0)
-    
-        self.quit_button = tkinter.Button(self.root, text="離開", command=self.root.destroy)
-        self.quit_button.grid(row=5, column=1)
-    
-        self.load_label = tkinter.Label(self.root, text="要帶入的課程：")
+        self.grade_field = tkinter.Entry(self.root, width=15)
+        self.grade_field.grid(row=2, column=1, columnspan=3)
+
+        self.load_label = tkinter.Label(self.root, text="帶入課程：")
         self.load_label.grid(row=3, column=0)
-        self.load_field = tkinter.Entry(self.root, width=15)
-        self.load_field.grid(row=3, column=1)
+        self.load_field = tkinter.Entry(self.root, width=20)
+        self.load_field.grid(row=3, column=1, columnspan=3)
         self.load_button = tkinter.Button(self.root, text="帶入", command=self.loadMethod)
-        self.load_button.grid(row=3, column=2)
-    
+        self.load_button.grid(row=3, column=4)
+
+        self.shibi_label = tkinter.Label(self.root, text="系必")
+        self.shibi_label.grid(row=4, column=0)
+        self.shibi_spin = tkinter.Spinbox(self.root, from_=0, to=self.total_score, command=self.updateScore, width=4)
+        self.shibi_spin.grid(row=5, column=0)
+
+        self.shish_label = tkinter.Label(self.root, text="系選")
+        self.shish_label.grid(row=4, column=1)
+        self.shish_spin = tkinter.Spinbox(self.root, from_=0, to=self.total_score, command=self.updateScore, width=4)
+        self.shish_spin.grid(row=5, column=1)
+
+        self.shush_label = tkinter.Label(self.root, text="選修")
+        self.shush_label.grid(row=4, column=2)
+        self.shush_spin = tkinter.Spinbox(self.root, from_=0, to=self.total_score, command=self.updateScore, width=4)
+        self.shush_spin.grid(row=5, column=2)
+
+        self.tonsh_label = tkinter.Label(self.root, text="通識")
+        self.tonsh_label.grid(row=4, column=3)
+        self.tonsh_spin = tkinter.Spinbox(self.root, from_=0, to=self.total_score, command=self.updateScore, width=4)
+        self.tonsh_spin.grid(row=5, column=3)
+
+        self.sport_label = tkinter.Label(self.root, text="體育")
+        self.sport_label.grid(row=4, column=4)
+        self.sport_spin = tkinter.Spinbox(self.root, from_=0, to=self.total_score, command=self.updateScore, width=4)
+        self.sport_spin.grid(row=5, column=4)
+        
+        self.score_label = tkinter.Label(self.root, text="能力點數：%i" % (21-self.total_score))
+        self.score_label.grid(row=6, column=0, columnspan=2)
+        
         self.search_button = tkinter.Button(self.root, text="搜尋最佳課程", command=self.searchMethod)
         self.search_button["width"] = 20
-        self.search_button.grid(row=4, column=0, columnspan=3)
+        self.search_button.grid(row=6, column=2, columnspan=3)
         
+        self.login_button = tkinter.Button(self.root, text="登入", command=self.loginMethod)
+        self.login_button.grid(row=7, column=1)
+    
+        self.quit_button = tkinter.Button(self.root, text="離開", command=self.root.destroy)
+        self.quit_button.grid(row=7, column=3)
+    
+
         self.test = Table(self.root,
                      rows=16,
                      cols=7,
@@ -167,7 +216,7 @@ class GUI:
                      variable=self.var,
                      usecommand=0,
                      command=self.test_cmd)
-        self.test.grid(row=0, column=3, rowspan=10)
+        self.test.grid(row=0, column=5, rowspan=20)
         self.test.tag_configure('sel', background='yellow')
         self.test.tag_configure('active', background='blue')
         self.test.tag_configure('title', anchor='w', bg='red', relief='sunken')
