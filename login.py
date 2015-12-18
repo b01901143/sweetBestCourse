@@ -102,5 +102,5 @@ def update(nes , b):
     for name in nes:
         if nes[name]<0:
             nes[name]=0
-p = Login("b01901143","s2264")
+#p = Login("b01901143","s2264")
     
