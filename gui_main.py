@@ -22,6 +22,7 @@ class GUI:
         self.courses = readSweetList(class_stars,teacher_stars)
         self.EmptyState = State.State()
         self.InitialState = State.State()
+        self.InitialState.setPersonDepart("EE") #for testing
         self.credit_limit = 25
         self.total_score = 1
         
@@ -79,9 +80,12 @@ class GUI:
         print "Logging..."
         self.bi_show, self.fu_shuan_bi_show = Initial(self.user_field.get(), self.grade_field.get())
         self.takenCourses = Login(self.user_field.get(), self.pswd_field.get())
-        self.bi_show.append(self.fu_shuan_bi_show[0])
+        self.InitialState.taken.add([taken for taken in self.takenCourses])
+        self.InitialState.setPersonDepart("EE")
+        #self.bi_show.append(self.fu_shuan_bi_show[0])通識
         self.to_show = [course for course in self.bi_show if course not in self.takenCourses]
         self.updateBishow2Table(self.to_show)
+        print self.InitialState.taken
         
     def updateBishow2Table(self, bi_show):
         sweety_dict = readSweetyCsv()
@@ -101,14 +105,20 @@ class GUI:
         print "Loading..."
 
     def searchMethod(self):
-        (nextState,score,class_stars,GPA) = max([(self.InitialState.generateSuccessor(course,self.credit_limit),\
-                    (course.class_stars/5.0*3.66)+course.GPA,course.class_stars,course.GPA)\
+        (nextState,score,class_stars,GPA,course) = max([(self.InitialState.generateSuccessor(course,self.credit_limit),\
+                    (course.class_stars/5.0*3.66)+course.GPA,course.class_stars,course.GPA,course)\
                     for course in self.courses if self.InitialState.generateSuccessor(course,self.credit_limit) != None],key=itemgetter(1))
+        print nextState.distrib, nextState.rule_out
+        nextState.distrib = checkRuleOut(self.courses, course, nextState.distrib, nextState.rule_out)
+        print nextState.distrib, nextState.rule_out
         while True:
             try:
-                (nextState,score,class_stars,GPA) = max([(nextState.generateSuccessor(course,self.credit_limit),\
-                        (course.class_stars/5.0*3.66)+course.GPA,course.class_stars,course.GPA)\
+                (nextState,score,class_stars,GPA,course) = max([(nextState.generateSuccessor(course,self.credit_limit),\
+                        (course.class_stars/5.0*3.66)+course.GPA,course.class_stars,course.GPA,course)\
                         for course in self.courses if nextState.generateSuccessor(course,self.credit_limit) != None],key=itemgetter(1))
+                print nextState.distrib, nextState.rule_out
+                nextState.distrib = checkRuleOut(self.courses, course, nextState.distrib, nextState.rule_out)
+                print nextState.distrib, nextState.rule_out
                 for c in nextState.taken:
                     for t in c.time:
                         index = "%i,%i" % (int(t[1]), (int(ord(t[0])-65)))

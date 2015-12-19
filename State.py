@@ -9,6 +9,10 @@ class State:
       self.taken = set(prevState.taken) #set of course taken (type = Course)
       self.free = set(prevState.free)	#set of free time slot
       self.credit = prevState.credit
+      #[shibi,shishuan,shuanshow,general,PE]
+      self.distrib = prevState.distrib
+      self.rule_out = prevState.rule_out
+      self.personDepart = prevState.personDepart
       """
       Mon  Tues Wed  Thur Fri  Sat  Sun
       A0   B0   C0   D0   E0   F0   G0
@@ -29,6 +33,9 @@ class State:
       for day in dayList:
         for i in range(0,15):
           self.free.add(day+str(i))
+      self.distrib = [4,4,4,4,1]
+      self.rule_out = set()
+      self.personDepart = "None"
 
   def __eq__( self , other ):
   	return self.taken == other.taken
@@ -58,7 +65,7 @@ class State:
     return True
 
   def generateSuccessor( self , course ,credit_limit):
-    if course.credit == 0:
+    if course.credit == 0 or course in self.rule_out:
       return None
     if not self.canTake(course) or self.credit+course.credit>credit_limit:
       #raise Exception("Cannot take course "+str(course))
@@ -69,6 +76,12 @@ class State:
     state.taken.add(course)
     state.credit += course.credit
     return state
+
+  def setPersonDepart( self,department ):
+    self.personDepart = department
+
+  def setPersonDistrib( self, distrib):
+    self.distrib = distrib
 
 
 

@@ -23,7 +23,6 @@ def readSweetList(class_stars, teacher_stars):
 			#classification = classify(line[0])
 			newC = Course.Course(line[0],line[1],[l for l in line[5].split(' ') if l != '']\
 								,line[2],[int(s) for s in line[8:]],line[4]) 
-			print line[4]
 			courses.append(newC)
 			if line[0] in class_stars:
 				newC.setClassStars( class_stars[line[0]] )
@@ -33,6 +32,20 @@ def readSweetList(class_stars, teacher_stars):
 				newC.setTeacherStars( teacher_stars[line[1]] )
 				t_count+=1
 				total_t_stars+=teacher_stars[line[1]]
+			general = line[7].split('A')
+			if len(general)>1:
+				try:
+					general_num = int(general[1][0])
+					if general_num in range(1,9):
+						newC.setCategory(general_num)
+						print newC
+						general_num = int(general[1][1])
+						if general_num in range(1,9):
+							newC.setCategory(general_num)
+							print newC
+							general_num = int(general[1][2])
+				except:
+					continue
 	fh.close()
 	aver_c_stars = total_c_stars/float(c_count)
 	aver_t_stars = total_t_stars/float(t_count)
@@ -80,3 +93,15 @@ def readSweetyCsv():
 			else:
 				sweety_dict[course_name].append(info[1:])
 	return sweety_dict
+
+def checkRuleOut( courses, course, distrib, rule_out):
+	if "PE" in course.ID:
+		if distrib[4] <= 1:
+			distrib[4] = 0
+			for c in courses:
+				if c!= course and "PE" in c.ID:
+					print c.name
+					rule_out.add(c)
+		else:
+			distrib[4] -= 1
+	return distrib

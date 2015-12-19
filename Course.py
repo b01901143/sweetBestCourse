@@ -14,6 +14,7 @@ class Course:
     self.ID = ID
     self.class_stars = None
     self.teacher_stars = None
+    self.category = []
     if sum(self.sweet)==0:
       self.GPA = 0
     else:
@@ -28,6 +29,7 @@ class Course:
     a = str(self.credit) + "學分_" + self.name + ": " + self.teacher + " "
     for item in sorted(self.time):
       a = a + "-" + item
+    a = a + " " + self.ID + " " + str(self.category)
     return a
 
   def __hash__( self ):
@@ -52,3 +54,6 @@ class Course:
 
   def setTeacherStars( self, stars ):
     self.teacher_stars = stars
+
+  def setCategory( self, newCat ):
+    self.category.append(newCat)
