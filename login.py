@@ -91,7 +91,7 @@ def Login(user, password):
     for name in neccessaries:
         print name , neccessaries[name]
     
-    #return takenCourses=(ID or 課名＋老師名), neccesaries=[系必(學分),系選,選修,通識,體育]
+    #return takenCourses=(ID or 課名＋老師名), neccesaries=[系必(學分),系選,選修,通識,體育], department
     return takenCourses,neccessaries
 
 def update(nes , b):
