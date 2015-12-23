@@ -10,7 +10,7 @@ from util import *
 import State
 import Course
 from operator import itemgetter
-#import pdb
+import pdb
 
 class GUI:
     def __init__(self):
@@ -18,8 +18,7 @@ class GUI:
         self.fu_shuan_bi_show = []
         self.class_time = []
         self.current_state = []
-        class_stars,teacher_stars = readStars()
-        self.courses = readSweetList(class_stars,teacher_stars)
+        self.courses, self.general_courses, self.PE_courses = readCoursePickle()
         self.EmptyState = State.State()
         self.InitialState = State.State()
         self.InitialState.setPersonDepart("EE") #for testing
@@ -79,13 +78,14 @@ class GUI:
     def loginMethod(self):
         print "Logging..."
         self.bi_show, self.fu_shuan_bi_show = Initial(self.user_field.get(), self.grade_field.get())
-        self.takenCourses = Login(self.user_field.get(), self.pswd_field.get())
-        self.InitialState.taken.add([taken for taken in self.takenCourses])
+        self.takenCourses,self.toGraduate = Login(self.user_field.get(), self.pswd_field.get())
+        self.ruleOutTaken()
         self.InitialState.setPersonDepart("EE")
+        for to in self.toGraduate:
+            print to
         #self.bi_show.append(self.fu_shuan_bi_show[0])通識
-        self.to_show = [course for course in self.bi_show if course not in self.takenCourses]
-        self.updateBishow2Table(self.to_show)
-        print self.InitialState.taken
+        #self.to_show = [course for course in self.bi_show if course not in self.takenCourses]
+        #self.updateBishow2Table(self.to_show)
         
     def updateBishow2Table(self, bi_show):
         sweety_dict = readSweetyCsv()
@@ -144,6 +144,35 @@ class GUI:
         self.score_label.config(text="能力點數：%i" % (20-self.total_score))
         print self.total_score
 
+    def ruleOutTaken(self):
+        flag=0
+        for taken in self.takenCourses:
+            for c in self.courses:
+                if str(taken)==c.name:
+                    print c
+                    self.courses.remove(c)
+                    flag=1
+                    break
+            if flag==1:
+                continue
+            for c in self.general_courses:
+                if str(taken)==c.name:
+                    print c
+                    self.general_courses.remove(c)
+                    flag=1
+                    break
+            if flag==1:
+                continue
+            for c in self.PE_courses:
+                if str(taken)==c.name:
+                    print c
+                    self.PE_courses.remove(c)
+                    flag=1
+                    break
+            if flag==1:
+                continue
+            else:
+                print "Can't find"
 
     def createTable(self):
         self.user_label = tkinter.Label(self.root, text="帳號：")

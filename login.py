@@ -86,12 +86,14 @@ def Login(user, password):
             update(neccessaries,b)
             c = b[2].text
             c = c.split(" ")[0]
-            takenCourses.append(c)
+            takenCourses.append(c.encode('utf8'))
 
     for name in neccessaries:
         print name , neccessaries[name]
     
-    return takenCourses
+    #return takenCourses=(ID or 課名＋老師名), neccesaries=[系必(學分),系選,選修,通識,體育]
+    return takenCourses,neccessaries
+
 def update(nes , b):
     if b[0].text[1:3] == u'通識':
         nes['通識'] -= int(b[6].text)

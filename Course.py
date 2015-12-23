@@ -16,7 +16,7 @@ class Course:
     self.teacher_stars = None
     self.category = []
     if sum(self.sweet)==0:
-      self.GPA = 0
+      self.GPA = 3.66
     else:
       aver_sweet = 4.3*self.sweet[9] +4.0*self.sweet[8] +3.7*self.sweet[7] +3.3*self.sweet[6] \
                 +3.0*self.sweet[5] +2.7*self.sweet[4] +2.3*self.sweet[3] +2.0*self.sweet[2] +1.7*self.sweet[1]
