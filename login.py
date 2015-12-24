@@ -66,43 +66,133 @@ def Login(user, password):
         des = session1.get(items['href'])
     des.encoding = 'big5'
     
+    #print des.text
+
     soup = bs(des.text, "html.parser")
     font = soup.select("tr")
 
     takenCourses =[]
     neccessaries = dict()
-    
+    grouped = []
+    undone = {
+    'A' : True,
+    'B' : True,
+    'C' : True,
+    'D' : True,
+    'E' : True
+    }
+    exp = {
+    'A' : [],
+    'B' : [],
+    'C' : [],
+    'D' : [],
+    'E' : []
+
+    }
+    grouped.append([0,'指定選修']) 
+    grouped.append([0,'一般選修']) 
+    grouped.append([0,'通識'])  
+    grouped.append([4,'體育'])      
+    grouped.append([4])        #'實驗'
+    grouped.append([3])        #'第F群'
+    grouped.append([3])        #'第G群'
+    i = 0
+    flag = ''
     for a in font:
+        i += 1
+        flag = setflag(a.text[2:5],flag)
+        print '\n' + "NNNNNNNN  "+ str(i)  
+        addto(grouped,a,flag,undone,exp)
         b = a.findAll("td")
         if len(b) == 1:
             if b[0].text[4:10] == '      ' and not b[0].text[10] == ' ': #text[4~9]
-                neccessaries['指定選修'] = int(b[0].text[37:39])
-                neccessaries['一般選修'] = int(b[0].text[48:50])
-                neccessaries['通識'] = int(b[0].text[56:58])
+                grouped[0][0] = int(b[0].text[37:39])  #指定選修
+                grouped[1][0] = int(b[0].text[48:50]) #一般選修
+                grouped[2][0] = int(b[0].text[56:58]) #通識
 
         if len(b) == 9:
             if b[7].text == u' 未到 ' or b[7].text ==' F ' or  b[7].text == u' 停修 ':
                 continue
-            update(neccessaries,b)
-            c = b[2].text
+            update(grouped,b)
+            c = str(b[3].text)
             c = c.split(" ")[0]
-            takenCourses.append(c.encode('utf8'))
+            takenCourses.append(c)
 
-    for name in neccessaries:
-        print name , neccessaries[name]
+    for typ in undone:
+        if undone[typ]:
+            grouped[4]+=exp[typ]
+        else:
+            grouped[4][0] -= 2
+    if grouped[4][0] < 0:
+        grouped[4][0] = 0
+
     
-    #return takenCourses=(ID or 課名＋老師名), neccesaries=[系必(學分),系選,選修,通識,體育], department
-    return takenCourses,neccessaries
 
-def update(nes , b):
+    #return takenCourses=(ID), grouped=[[學分,指定選修],[學分,一般選修],[學分,通識],[學分,體育],[學分,實驗1,...],
+    #                                   [學分,實驗1,...],[學分,第F群1,...],[學分,第G群1,...]]
+    return takenCourses , grouped
+def update(grp , b):
     if b[0].text[1:3] == u'通識':
-        nes['通識'] -= int(b[6].text)
-    elif b[0].text[1:3] == u'選修' and b[8].text == u' 可當指定選修 ' and nes['指定選修']>0:
-        nes['指定選修'] -= int(b[6].text)
+        grp[2][0] -= int(b[6].text)
+    elif b[0].text[1:3] == u'選修' and b[8].text == u' 可當指定選修 ' and grp[0][0]>0:
+        grp[0][0] -= int(b[6].text)
     elif b[0].text[1:3] == u'選修':
-        nes['一般選修'] -= int(b[6].text)
-    for name in nes:
-        if nes[name]<0:
-            nes[name]=0
-#p = Login("b01901143","s2264")
+        grp[1][0] -= int(b[6].text)
+    if b[0].text[1:3] == u'體育':
+        grp[3][0] -= int(b[6].text)
+
+    if b[0].text[1:4] == u'必修F':
+        grp[5][0] -= int(b[6].text)
+    elif b[0].text[1:4] == u'必修G':
+        grp[6][0] -= int(b[6].text)
+
+    for name in grp:
+        if name[0]<0:
+            name[0]=0
+def setflag(string,flag):
+    if string == u'第A群':
+        return 'A'
+    if string == u'第B群':
+        return 'B'
+    if string == u'第C群':
+        return 'C'
+    if string == u'第D群':
+        return 'D'
+    if string == u'第E群':
+        return 'E'
+    if string == u'第F群':
+        return 'F'
+    if string == u'第G群':
+        return 'G'
+    if string == u'第H群':
+        return ''    
+    return flag
+
+def addto(grp , a, flag, undone , exp):
+    if flag == '':
+        return
+    b = a.findAll('td')
+    if a.text[2] == u'第':
+        ID = str(b[1].text)
+        check = b[5].text
+    else:
+        ID = str(b[0].text)
+        check = b[4].text
+    if flag == 'A' or flag == 'B' or flag == 'C' or flag == 'D' or flag == 'E':
+        exp[flag].append(ID)
+        if check == 'V':
+            undone[flag] = False
+    if flag == 'F':
+        if not check == 'V':
+            grp[5].append(ID)
+    if flag == 'G':
+        if not check == 'V':
+            grp[6].append(ID)
+
+
     
+
+
+    
+    
+#Login("b01901143","s2264")
