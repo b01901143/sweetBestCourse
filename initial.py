@@ -20,6 +20,10 @@ def Initial(user, grade):
         
         res = session1.get(url)
         soup = bs(res.text, "html.parser")
+        dep_name = soup.select("b")
+        for a in dep_name:
+            if len(a.text) > 9:
+                name_of_department = a.text[9:]
         table = soup.select("tr")
         i=0 
         for row in table:
@@ -42,5 +46,5 @@ def Initial(user, grade):
     #print "\nfu shuan bi show:"
     #for item in fu_shuan_bi_show:
     #    print item
-    return bi_show, fu_shuan_bi_show  
+    return bi_show, fu_shuan_bi_show,  name_of_department
 #Initial("b01901143","3")
